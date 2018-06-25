@@ -5,17 +5,19 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 
-public class DiscoverServices implements NsdManager.DiscoveryListener, NsdManager.ResolveListener {
+public class DiscoverServices implements NsdManager.DiscoveryListener {
     private static final String TAG = "DiscoverServices";
     private String mServiceType;
+    private String mServiceName;
 
     private Context mContext;
     private NsdManager mNsdManager;
 
     private AsyncTaskCallback asyncTaskCallback;
 
-    public DiscoverServices(String mServiceType, Context mContext, AsyncTaskCallback asyncTaskCallback) {
+    public DiscoverServices(String mServiceType, String mServiceName, Context mContext, AsyncTaskCallback asyncTaskCallback) {
         this.mServiceType = mServiceType;
+        this.mServiceName = mServiceName;
         this.mContext = mContext;
         this.asyncTaskCallback = asyncTaskCallback;
     }
@@ -63,7 +65,11 @@ public class DiscoverServices implements NsdManager.DiscoveryListener, NsdManage
         Log.d(TAG, "Service Discovery Success: " + nsdServiceInfo);
         Log.d(TAG, "===============================================");
 
-        resolveFoundService(nsdServiceInfo);
+        if (!nsdServiceInfo.getServiceType().equals(mServiceType)) {
+            Log.d(TAG, "Unknown Service Type: " + nsdServiceInfo.getServiceType());
+        } else if (nsdServiceInfo.getServiceName().contains(mServiceName)){
+            resolveFoundService(nsdServiceInfo);
+        }
     }
 
     @Override
@@ -75,24 +81,10 @@ public class DiscoverServices implements NsdManager.DiscoveryListener, NsdManage
 
     /////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void onResolveFailed(NsdServiceInfo nsdServiceInfo, int errorCode) {
-        Log.d(TAG, "===============================================");
-        Log.d(TAG, "Service Resolve Failed: " + nsdServiceInfo);
-        Log.d(TAG, "Service Resolve Failure Code: " + errorCode);
-        Log.d(TAG, "===============================================");
-    }
-
-    @Override
-    public void onServiceResolved(NsdServiceInfo nsdServiceInfo) {
-        Log.d(TAG, "===============================================");
-        Log.d(TAG, "Service Resolve Success: " + nsdServiceInfo);
-        Log.d(TAG, "===============================================");
-
-        asyncTaskCallback.onTaskCompleted(nsdServiceInfo);
-    }
-
     private void resolveFoundService(NsdServiceInfo nsdServiceInfo) {
-        mNsdManager.resolveService(nsdServiceInfo, this);
+        Log.d(TAG, "===============================================");
+        Log.d(TAG, "Resolving Service: " + nsdServiceInfo);
+        Log.d(TAG, "===============================================");
+        mNsdManager.resolveService(nsdServiceInfo, new ResolveServices(asyncTaskCallback));
     }
 }

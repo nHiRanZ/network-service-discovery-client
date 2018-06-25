@@ -22,16 +22,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ClientActivity";
 
     private ActivityMainBinding activityMainBinding;
-    private String mServiceName = "BIZ_1no8197w237_PA";
+    private String mServiceName = "BIZ_1whe199y29f";
     private final String SERVICE_TYPE = "_http._tcp.";
-    private Context mContext;
-
-    private ServerSocket serverSocket;
     private Socket socket;
 
     Handler updateConversationHandler;
-
-
     NsdServiceInfo nsdServiceInfo = null;
 
     @Override
@@ -39,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityMainBinding = DataBindingUtil.setContentView(this,R.layout.activity_main);
 
-        DiscoverServices discoverServices = new DiscoverServices(SERVICE_TYPE, this.getApplicationContext(), new AsyncTaskCallback() {
+        DiscoverServices discoverServices = new DiscoverServices(SERVICE_TYPE, mServiceName, this.getApplicationContext(), new AsyncTaskCallback() {
             @Override
             public void onTaskCompleted(Object response) {
                 Log.d(TAG, "onTaskCompleted: " + response);
@@ -49,9 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
                     updateConversationHandler = new Handler();
                     nsdServiceInfo = nsdServiceInfoObj;
-                    Thread serverThread = new Thread(new ClientThread());
-                    serverThread.start();
-
+                    Thread clientThread = new Thread(new ClientThread());
+                    clientThread.start();
                 }
             }
         });
@@ -59,31 +53,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class ClientThread implements Runnable {
-
         public void run() {
             if (nsdServiceInfo != null) {
-                Socket socket = null;
                 try {
                     socket = new Socket(nsdServiceInfo.getHost(), nsdServiceInfo.getPort());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                while (!Thread.currentThread().isInterrupted()) {
-                    try {
-                        InputStream input = socket.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                        final String line = reader.readLine();    // reads a line of text
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                activityMainBinding.message.setText(line);
-                            }
-                        });
+                    while (!Thread.currentThread().isInterrupted()) {
+                        try {
+                            InputStream input = socket.getInputStream();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                            final String line = reader.readLine();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    activityMainBinding.message.setText(line);
+                                }
+                            });
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
+
+                } catch (IOException e) {
+                    if (socket != null) {
+                        try {
+                            socket.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    //e.printStackTrace();
                 }
             }
         }
@@ -93,7 +94,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         try {
-            serverSocket.close();
+            if (socket != null) {
+                socket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -102,7 +105,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         try {
-            serverSocket.close();
+            if (socket != null) {
+                socket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
