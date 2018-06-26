@@ -1,6 +1,7 @@
 package io.apptizer.nsdclientapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
@@ -34,22 +35,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityMainBinding = DataBindingUtil.setContentView(this,R.layout.activity_main);
 
-        DiscoverServices discoverServices = new DiscoverServices(SERVICE_TYPE, mServiceName, this.getApplicationContext(), new AsyncTaskCallback() {
-            @Override
-            public void onTaskCompleted(Object response) {
-                Log.d(TAG, "onTaskCompleted: " + response);
-                if (response instanceof NsdServiceInfo) {
-                    NsdServiceInfo nsdServiceInfoObj = (NsdServiceInfo) response;
-                    Log.d(TAG, "nsdServiceInfo: " + nsdServiceInfoObj);
+        Intent serverMessageService = new Intent(this.getApplicationContext(), ServerMessageService.class);
+        serverMessageService.putExtra("mServiceType", SERVICE_TYPE);
+        serverMessageService.putExtra("mServiceName", mServiceName);
+        this.getApplicationContext().startService(serverMessageService);
 
-                    updateConversationHandler = new Handler();
-                    nsdServiceInfo = nsdServiceInfoObj;
-                    Thread clientThread = new Thread(new ClientThread());
-                    clientThread.start();
-                }
-            }
-        });
-        discoverServices.discover();
+//        DiscoverServices discoverServices = new DiscoverServices(SERVICE_TYPE, mServiceName, this.getApplicationContext(), new AsyncTaskCallback() {
+//            @Override
+//            public void onTaskCompleted(Object response) {
+//                Log.d(TAG, "onTaskCompleted: " + response);
+//                if (response instanceof NsdServiceInfo) {
+//                    NsdServiceInfo nsdServiceInfoObj = (NsdServiceInfo) response;
+//                    Log.d(TAG, "nsdServiceInfo: " + nsdServiceInfoObj);
+//
+//                    updateConversationHandler = new Handler();
+//                    nsdServiceInfo = nsdServiceInfoObj;
+////                    Thread clientThread = new Thread(new ClientThread());
+////                    clientThread.start();
+//                }
+//            }
+//        });
+//        discoverServices.discover();
     }
 
     class ClientThread implements Runnable {
