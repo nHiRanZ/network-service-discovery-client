@@ -1,7 +1,9 @@
 package io.apptizer.nsdclientapp;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     Handler updateConversationHandler;
     NsdServiceInfo nsdServiceInfo = null;
+    BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,60 +43,16 @@ public class MainActivity extends AppCompatActivity {
         serverMessageService.putExtra("mServiceName", mServiceName);
         this.getApplicationContext().startService(serverMessageService);
 
-//        DiscoverServices discoverServices = new DiscoverServices(SERVICE_TYPE, mServiceName, this.getApplicationContext(), new AsyncTaskCallback() {
-//            @Override
-//            public void onTaskCompleted(Object response) {
-//                Log.d(TAG, "onTaskCompleted: " + response);
-//                if (response instanceof NsdServiceInfo) {
-//                    NsdServiceInfo nsdServiceInfoObj = (NsdServiceInfo) response;
-//                    Log.d(TAG, "nsdServiceInfo: " + nsdServiceInfoObj);
-//
-//                    updateConversationHandler = new Handler();
-//                    nsdServiceInfo = nsdServiceInfoObj;
-////                    Thread clientThread = new Thread(new ClientThread());
-////                    clientThread.start();
-//                }
-//            }
-//        });
-//        discoverServices.discover();
-    }
 
-    class ClientThread implements Runnable {
-        public void run() {
-            if (nsdServiceInfo != null) {
-                try {
-                    socket = new Socket(nsdServiceInfo.getHost(), nsdServiceInfo.getPort());
-
-                    while (!Thread.currentThread().isInterrupted()) {
-                        try {
-                            InputStream input = socket.getInputStream();
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-
-                            final String line = reader.readLine();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    activityMainBinding.message.setText(line);
-                                }
-                            });
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                } catch (IOException e) {
-                    if (socket != null) {
-                        try {
-                            socket.close();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                    //e.printStackTrace();
-                }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("update.content");
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                activityMainBinding.message.setText(intent.getStringExtra("messageContent"));
             }
-        }
+        };
+        registerReceiver(broadcastReceiver,filter);
     }
 
     @Override
@@ -110,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        unregisterReceiver(broadcastReceiver);
         try {
             if (socket != null) {
                 socket.close();

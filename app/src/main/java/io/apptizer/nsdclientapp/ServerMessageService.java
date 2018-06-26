@@ -1,6 +1,7 @@
 package io.apptizer.nsdclientapp;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Handler;
@@ -21,6 +22,7 @@ public class ServerMessageService extends Service {
     private Socket socket;
     private InputStream inputStream;
     private BufferedReader bufferedReader;
+    private Context context;
 
     @Override
     public void onCreate() {
@@ -32,6 +34,7 @@ public class ServerMessageService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Service onStartCommand");
 
+        context = this;
         String mServiceName = intent.getStringExtra("mServiceName");
         String mServiceType = intent.getStringExtra("mServiceType");
 
@@ -59,7 +62,10 @@ public class ServerMessageService extends Service {
 
                                             String s = null;
                                             while ((s = bufferedReader.readLine()) != null) {
-                                                Log.d(TAG, s);
+                                                Intent local = new Intent();
+                                                local.setAction("update.content");
+                                                local.putExtra("messageContent", s);
+                                                context.sendBroadcast(local);
                                             }
                                         }
                                     } catch (IOException e) {
