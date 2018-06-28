@@ -48,7 +48,6 @@ public class ServerMessageService extends Service {
 
                     try {
                         socket = new Socket(nsdServiceInfoObj.getHost(), nsdServiceInfoObj.getPort());
-
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
