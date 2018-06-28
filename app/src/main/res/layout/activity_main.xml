@@ -2,17 +2,114 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout
+        android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Client App"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal"
+        android:background="@drawable/background">
+        <LinearLayout
+            android:id="@+id/latestOrderContainer"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_weight="2"
+                android:src="@drawable/round1logo"
+                android:layout_width="200dp"
+                android:layout_height="100dp" />
+            <LinearLayout
+                android:layout_weight="4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
+                <LinearLayout
+                    android:id="@+id/latestOrderWrapper"
+                    android:elevation="10dp"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    android:background="@drawable/latest_order_card_wrapper"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+                        <TextView
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#fff"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:text="NOW READY"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:background="@drawable/latest_order_card_body"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp">
+                        <TextView
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="35dp"
+                            android:textColor="#ffffff"
+                            android:text="TOKEN #"/>
+                        <TextView
+                            android:id="@+id/latestOrderId"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="70dp"
+                            android:textStyle="bold"
+                            android:textColor="#ffffff"
+                            android:text="0001"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+                        <TextView
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#fff"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:text="FOR PICKUP"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+            <!--<LinearLayout-->
+                <!--android:layout_weight="4"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content">-->
+                <!---->
+            <!--</LinearLayout>-->
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/orderListContainer"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:paddingTop="50dp"
+            android:paddingBottom="50dp"
+            android:orientation="vertical">
+            <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/orderList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="15dp"/>
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Client App"/>
+        </LinearLayout>
     </LinearLayout>
 </layout>

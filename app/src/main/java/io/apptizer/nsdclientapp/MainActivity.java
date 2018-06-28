@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.apptizer.nsdclientapp.databinding.ActivityMainBinding;
 
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private String mServiceName = "BIZ_1whe199y29f";
     private final String SERVICE_TYPE = "_http._tcp.";
     private Socket socket;
+    private List<Order> orderList = new ArrayList<>();
 
     Handler updateConversationHandler;
     NsdServiceInfo nsdServiceInfo = null;
@@ -49,6 +52,17 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(broadcastReceiver,filter);
 
         getSupportActionBar().hide();
+
+        setupOrderList(activityMainBinding);
+    }
+
+    void setupOrderList(ActivityMainBinding activityMainBinding) {
+        for (int i = 0; i < 4; i++) {
+            orderList.add(new Order("000" + i, "READY"));
+        }
+
+        OrderListAdapter adapter = new OrderListAdapter(this, orderList);
+        activityMainBinding.orderList.setAdapter(adapter);
     }
 
     @Override
