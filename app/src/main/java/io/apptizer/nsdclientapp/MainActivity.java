@@ -9,6 +9,8 @@ import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -56,21 +58,34 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String jsonString = intent.getStringExtra("messageContent");
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                System.out.println(jsonString);
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//                System.out.println(jsonString);
+//                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 OrderResponse orderResponse = gson.fromJson(jsonString, OrderResponse.class);
 
-                orderList.clear();
-                orderList.addAll(orderResponse.getOrders());
+                List<Order> filteredOrderList = new ArrayList<>();
 
-//                orderList.add(new Order(Integer.toString((int)(Math.random() * 50 + 1)), "READY"));
+                if (orderResponse.getOrders().size() > 0) {
+                    activityMainBinding.latestOrderContainer.setVisibility(View.VISIBLE);
+                    activityMainBinding.latestOrderId.setText(orderResponse.getOrders().get(orderResponse.getOrders().size() - 1).getOrderId());
+                    if (orderResponse.getOrders().size() > 1) {
+                        for (int i = 0; i < orderResponse.getOrders().size() - 1; i++) {
+                            filteredOrderList.add(orderResponse.getOrders().get(i));
+                        }
+                    }
+                } else {
+                    activityMainBinding.latestOrderContainer.setVisibility(View.GONE);
+                }
+
+                orderList.clear();
+                orderList.addAll(filteredOrderList);
 
                 OrderListAdapter adapter = new OrderListAdapter(context, orderList);
                 activityMainBinding.orderList.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
 
-                activityMainBinding.message.setText(jsonString);
+                activityMainBinding.orderList.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+                activityMainBinding.orderList.setStackFromBottom(true);
             }
         };
         registerReceiver(broadcastReceiver,filter);
