@@ -44,7 +44,7 @@ public class OrderListAdapter extends BaseAdapter {
 
         Order order = (Order) getItem(position);
         orderListItemId.setText(order.getOrderId());
-        orderListItemStatus.setText(order.getOrderStatus());
+        orderListItemStatus.setText(order.getStatus());
 
         return rowView;
     }

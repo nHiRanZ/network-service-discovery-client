@@ -2,14 +2,14 @@ package io.apptizer.nsdclientapp;
 
 public class Order {
     private String orderId;
-    private String orderStatus;
+    private String status;
 
     public Order() {
     }
 
-    public Order(String orderId, String orderStatus) {
+    public Order(String orderId, String status) {
         this.orderId = orderId;
-        this.orderStatus = orderStatus;
+        this.status = status;
     }
 
     public String getOrderId() {
@@ -20,19 +20,19 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
     public String toString() {
         return "Order{" +
                 "orderId='" + orderId + '\'' +
-                ", orderStatus='" + orderStatus + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 }
