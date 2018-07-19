@@ -8,7 +8,6 @@
         android:orientation="horizontal"
         android:background="@drawable/background">
         <LinearLayout
-            android:id="@+id/latestOrderContainer"
             android:gravity="center"
             android:layout_weight="1"
             android:layout_width="0dp"
@@ -20,6 +19,7 @@
                 android:layout_width="200dp"
                 android:layout_height="100dp" />
             <LinearLayout
+                android:id="@+id/latestOrderContainer"
                 android:layout_weight="4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -108,6 +108,7 @@
                 android:transcriptMode="alwaysScroll"
                 android:stackFromBottom="true"/>
             <TextView
+                android:visibility="gone"
                 android:id="@+id/message"
                 android:textColor="#ffffff"
                 android:layout_width="match_parent"

@@ -13,14 +13,10 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import io.apptizer.nsdclientapp.databinding.ActivityMainBinding;
@@ -29,10 +25,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ClientActivity";
 
     private ActivityMainBinding activityMainBinding;
-    private String mServiceName = "BIZ_1whe199y29f_PA";
+    private String mServiceName = "BIZ_3nr463bs38b_PA_SYSTEM";
     private final String SERVICE_TYPE = "_http._tcp.";
     private Socket socket;
-    private List<Order> orderList = new ArrayList<>();
+    private List<PaOrder> paOrderList = new ArrayList<>();
     private Gson gson = new Gson();
     private Context context;
 
@@ -61,26 +57,26 @@ public class MainActivity extends AppCompatActivity {
 //                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 //                System.out.println(jsonString);
 //                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                OrderResponse orderResponse = gson.fromJson(jsonString, OrderResponse.class);
+                PaOrderResponse paOrderResponse = gson.fromJson(jsonString, PaOrderResponse.class);
 
-                List<Order> filteredOrderList = new ArrayList<>();
+                List<PaOrder> filteredPaOrderList = new ArrayList<>();
 
-                if (orderResponse.getOrders().size() > 0) {
+                if (paOrderResponse != null && paOrderResponse.getPaOrders() != null && paOrderResponse.getPaOrders().size() > 0) {
                     activityMainBinding.latestOrderContainer.setVisibility(View.VISIBLE);
-                    activityMainBinding.latestOrderId.setText(orderResponse.getOrders().get(orderResponse.getOrders().size() - 1).getOrderId());
-                    if (orderResponse.getOrders().size() > 1) {
-                        for (int i = 0; i < orderResponse.getOrders().size() - 1; i++) {
-                            filteredOrderList.add(orderResponse.getOrders().get(i));
+                    activityMainBinding.latestOrderId.setText(paOrderResponse.getPaOrders().get(paOrderResponse.getPaOrders().size() - 1).getOrderId());
+                    if (paOrderResponse.getPaOrders().size() > 1) {
+                        for (int i = 0; i < paOrderResponse.getPaOrders().size() - 1; i++) {
+                            filteredPaOrderList.add(paOrderResponse.getPaOrders().get(i));
                         }
                     }
                 } else {
                     activityMainBinding.latestOrderContainer.setVisibility(View.GONE);
                 }
 
-                orderList.clear();
-                orderList.addAll(filteredOrderList);
+                paOrderList.clear();
+                paOrderList.addAll(filteredPaOrderList);
 
-                OrderListAdapter adapter = new OrderListAdapter(context, orderList);
+                OrderListAdapter adapter = new OrderListAdapter(context, paOrderList);
                 activityMainBinding.orderList.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
 
@@ -92,16 +88,16 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        OrderListAdapter adapter = new OrderListAdapter(this, orderList);
+        OrderListAdapter adapter = new OrderListAdapter(this, paOrderList);
         activityMainBinding.orderList.setAdapter(adapter);
     }
 
     void setupOrderList(ActivityMainBinding activityMainBinding) {
         for (int i = 0; i < 4; i++) {
-            orderList.add(new Order("000" + i, "READY"));
+            paOrderList.add(new PaOrder("000" + i, "READY"));
         }
 
-        OrderListAdapter adapter = new OrderListAdapter(this, orderList);
+        OrderListAdapter adapter = new OrderListAdapter(this, paOrderList);
         activityMainBinding.orderList.setAdapter(adapter);
     }
 

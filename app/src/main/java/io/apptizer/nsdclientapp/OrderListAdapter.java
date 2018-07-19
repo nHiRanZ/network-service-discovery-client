@@ -12,22 +12,22 @@ import java.util.List;
 public class OrderListAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
-    private List<Order> orderList;
+    private List<PaOrder> paOrderList;
 
-    public OrderListAdapter(Context mContext, List<Order> orderList) {
+    public OrderListAdapter(Context mContext, List<PaOrder> paOrderList) {
         this.mContext = mContext;
-        this.orderList = orderList;
+        this.paOrderList = paOrderList;
         this.mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return orderList.size();
+        return paOrderList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return orderList.get(position);
+        return paOrderList.get(position);
     }
 
     @Override
@@ -42,9 +42,9 @@ public class OrderListAdapter extends BaseAdapter {
         TextView orderListItemId = (TextView) rowView.findViewById(R.id.orderListItemId);
         TextView orderListItemStatus = (TextView) rowView.findViewById(R.id.orderListItemStatus);
 
-        Order order = (Order) getItem(position);
-        orderListItemId.setText(order.getOrderId());
-        orderListItemStatus.setText(order.getStatus());
+        PaOrder paOrder = (PaOrder) getItem(position);
+        orderListItemId.setText(paOrder.getOrderId());
+        orderListItemStatus.setText(paOrder.getStatus());
 
         return rowView;
     }

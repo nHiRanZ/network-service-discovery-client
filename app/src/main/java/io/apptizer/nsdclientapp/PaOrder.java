@@ -1,13 +1,13 @@
 package io.apptizer.nsdclientapp;
 
-public class Order {
+public class PaOrder {
     private String orderId;
     private String status;
 
-    public Order() {
+    public PaOrder() {
     }
 
-    public Order(String orderId, String status) {
+    public PaOrder(String orderId, String status) {
         this.orderId = orderId;
         this.status = status;
     }
@@ -30,7 +30,7 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order{" +
+        return "PaOrder{" +
                 "orderId='" + orderId + '\'' +
                 ", status='" + status + '\'' +
                 '}';
